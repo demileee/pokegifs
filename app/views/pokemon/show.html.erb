@@ -1,0 +1,8 @@
+<%= image_tag(@url) %>
+<h2><%= @name %></h2>
+<h3>Types</h3>
+<ul>
+<% @types.each do |type| %>
+  <li><%= type %></li>
+<% end %>
+</ul>

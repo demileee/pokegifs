@@ -8,21 +8,28 @@ class PokemonController < ApplicationController
 
     pokeapi = HTTParty.get("http://pokeapi.co/api/v2/pokemon/#{params[:id]}")
       pokebody = JSON.parse(pokeapi.body)
-      name = pokebody["name"]
-      types = pokebody["types"].map {|type| type["type"]["name"]}
-      id = pokebody["id"]
+      @name = pokebody["name"]
+      @types = pokebody["types"].map {|type| type["type"]["name"]}
+      @id = pokebody["id"]
 
 
-    giphy = HTTParty.get("https://api.giphy.com/v1/gifs/search?api_key=#{ENV['GIPHY_KEY']}&q=#{name}&rating=g")
+    giphy = HTTParty.get("https://api.giphy.com/v1/gifs/search?api_key=#{ENV['GIPHY_KEY']}&q=#{@name}&rating=g")
       giphybody = JSON.parse(giphy.body)
-      url = giphybody["data"].sample["url"]
+      @url = giphybody["data"].sample["images"]["downsized_medium"]["url"]
 
-    render json:  {
-      "id": id,
-      "name": name,
-      "types": types,
-      "gif_url": url
+    json =  {
+      "id": @id,
+      "name": @name,
+      "types": @types,
+      "gif_url": @url
     }
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: json
+      end
+    end
 
   end
 
